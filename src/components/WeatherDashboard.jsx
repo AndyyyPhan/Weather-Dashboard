@@ -12,7 +12,7 @@ export default function WeatherDashboard(props) {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 setWeatherData({
                     curTemp: data.main.temp,
                     humidity: data.main.humidity,
