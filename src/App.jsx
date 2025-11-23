@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import SearchBar from "./components/SearchBar";
 import WeatherDashboard from "./components/WeatherDashboard";
+import ForecastDashboard from "./components/ForecastDashboard";
 import React from "react";
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
           <SearchBar onSearch={setCity} />
         </div>
         <WeatherDashboard city={city} />
+        <ForecastDashboard city={city}/>
       </div>
     </main>
   )
