@@ -26,17 +26,28 @@ export default function WeatherDashboard(props) {
                 props.setValidCity(props.city)
             })
             .catch(error => {
-                setErrorMessage("Invalid City")
+                setErrorMessage("We couldn't find that city. Check the spelling and try again.")
             })
     }, [props.city])
+
+    function ErrorBanner({message}) {
+        if (!message) return null;
+        return (
+            <div className="alert alert-error" role="alert">
+                <span className="alert-icon">!</span>
+                <span className="alert-text">{message}</span>
+            </div>
+        )
+    }
+
     return (
         <section className="weather-section">
-            {!weatherData && (
+            <ErrorBanner message={errorMessage}/>
+            {!weatherData && !errorMessage && (
                 <div className="empty-state">
                     Search for a city to see its current weather.
                 </div>
             )}
-            {errorMessage}
             {weatherData && (
                 <div className="weather-card">
                     <div className="weather-main">
