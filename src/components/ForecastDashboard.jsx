@@ -4,8 +4,8 @@ export default function ForecastDashboard(props) {
     const [forecastData, setForecastData] = React.useState(null);
     const [cityLatLon, setCityLatLon] = React.useState(null);
     React.useEffect(() => {
-        if (props.city === "") return;
-        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${props.city}&appid=${apiKey}`)
+        if (props.validCity === "") return;
+        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${props.validCity}&appid=${apiKey}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -16,7 +16,7 @@ export default function ForecastDashboard(props) {
                 // console.log(data);
                 setCityLatLon({ lat: data[0].lat, lon: data[0].lon })
             })
-    }, [props.city])
+    }, [props.validCity])
     React.useEffect(() => {
         if (!cityLatLon) return;
         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${cityLatLon.lat}&lon=${cityLatLon.lon}&appid=${apiKey}`)

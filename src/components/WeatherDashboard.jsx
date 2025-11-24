@@ -2,8 +2,10 @@ import React from "react";
 export default function WeatherDashboard(props) {
     const apiKey = import.meta.env.VITE_WEATHER_API_KEY
     const [weatherData, setWeatherData] = React.useState(null);
+    const [errorMessage, setErrorMessage] = React.useState(null);
     React.useEffect(() => {
         if (props.city === "") return;
+        setErrorMessage(null);
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=${apiKey}&units=metric`)
             .then(response => {
                 if (!response.ok) {
@@ -14,12 +16,17 @@ export default function WeatherDashboard(props) {
             .then(data => {
                 // console.log(data);
                 setWeatherData({
+                    cityName: data.name,
                     curTemp: data.main.temp,
                     humidity: data.main.humidity,
                     windSpeed: data.wind.speed,
                     weatherDesc: data.weather[0].description,
                     weatherIcon: data.weather[0].icon
                 })
+                props.setValidCity(props.city)
+            })
+            .catch(error => {
+                setErrorMessage("Invalid City")
             })
     }, [props.city])
     return (
@@ -29,10 +36,11 @@ export default function WeatherDashboard(props) {
                     Search for a city to see its current weather.
                 </div>
             )}
+            {errorMessage}
             {weatherData && (
                 <div className="weather-card">
                     <div className="weather-main">
-                        <h2>City: {props.city}</h2>
+                        <h2>City: {weatherData.cityName}</h2>
                         <div className="weather-temp">
                             {Math.round(weatherData.curTemp)}°C
                         </div>
