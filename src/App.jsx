@@ -5,7 +5,16 @@ import ForecastDashboard from "./components/ForecastDashboard";
 import React from "react";
 
 export default function App() {
-  const [city, setCity] = React.useState("");
+  const [validCity, setValidCity] = React.useState(() => {
+    const savedCity = localStorage.getItem("validCity");
+    return savedCity ? savedCity : "";
+  });
+
+  const [city, setCity] = React.useState(validCity);
+
+  React.useEffect(() => {
+    localStorage.setItem("validCity", validCity);
+  }, [validCity])
 
   return (
     <main className="app-shell">
@@ -14,8 +23,8 @@ export default function App() {
           <Header />
           <SearchBar onSearch={setCity} />
         </div>
-        <WeatherDashboard city={city} />
-        <ForecastDashboard city={city}/>
+        <WeatherDashboard city={city} setValidCity={setValidCity}/>
+        <ForecastDashboard validCity={validCity} />
       </div>
     </main>
   )
