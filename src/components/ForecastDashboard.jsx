@@ -1,7 +1,7 @@
 import React from "react";
 export default function ForecastDashboard(props) {
     const apiKey = import.meta.env.VITE_WEATHER_API_KEY
-    const [forecastData, setForecastData] = React.useState([]);
+    const [forecastData, setForecastData] = React.useState(null);
     const [cityLatLon, setCityLatLon] = React.useState(null);
     React.useEffect(() => {
         if (props.city === "") return;
@@ -49,10 +49,14 @@ export default function ForecastDashboard(props) {
         if (!forecastData) return null;
         return forecastData.map(day => {
             return (
-                <div key={day.date}>
-                    Date: {day.date}
-                    Min Temp: {day.temp_min}
-                    Max Temp: {day.temp_max}
+                <div className="weather-card" key={day.date}>
+                    <div className="weather-main">
+                        <h2>Date: {day.date}</h2>
+                        <div className="weather-meta">
+                            <span>Min Temp: {day.temp_min}</span>
+                            <span>Max Temp: {day.temp_max}</span>
+                        </div>
+                    </div>
                 </div>
             )
         })
@@ -60,7 +64,7 @@ export default function ForecastDashboard(props) {
 
     return (
         <>
-            Forecast Dashboard
+            {forecastData && <h2>Forecast Dashboard</h2>}
             {displayForecast()}
         </>
     )
