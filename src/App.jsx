@@ -12,6 +12,7 @@ export default function App() {
 
   const [city, setCity] = React.useState(validCity);
   const [units, setUnits] = React.useState("metric");
+  const [theme, setTheme] = React.useState("dark");
 
   React.useEffect(() => {
     localStorage.setItem("validCity", validCity);
@@ -21,8 +22,12 @@ export default function App() {
     setUnits((prevUnits) => (prevUnits === "metric" ? "imperial" : "metric"));
   }
 
+  function toggleTheme() {
+    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+  }
+
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${theme === "dark" ? "theme-dark" : "theme-light"}`}>
       <div className="app-container">
         <div className="header-row">
           <Header />
@@ -39,8 +44,19 @@ export default function App() {
               °F
             </span>
           </button>
+          <button type="button"
+            className="theme-toggle"
+            onClick={toggleTheme}
+          >
+            <span className={`unit-toggle-segment ${theme === "dark" ? "is-active" : ""}`}>
+              🌙
+            </span>
+            <span className={`unit-toggle-segment ${theme === "light" ? "is-active" : ""}`}>
+              🔆
+            </span>
+          </button>
         </div>
-        
+
         <WeatherDashboard city={city} setValidCity={setValidCity} units={units} />
         <ForecastDashboard validCity={validCity} units={units} />
       </div>
