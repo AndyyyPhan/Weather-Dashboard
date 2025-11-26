@@ -3,8 +3,10 @@ export default function ForecastDashboard(props) {
     const apiKey = import.meta.env.VITE_WEATHER_API_KEY
     const [forecastData, setForecastData] = React.useState(null);
     const [cityLatLon, setCityLatLon] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
         if (props.validCity === "") return;
+        setIsLoading(true);
         fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${props.validCity}&appid=${apiKey}`)
             .then(response => {
                 if (!response.ok) {
@@ -15,10 +17,15 @@ export default function ForecastDashboard(props) {
             .then(data => {
                 // console.log(data);
                 setCityLatLon({ lat: data[0].lat, lon: data[0].lon })
+                setIsLoading(false);
+            })
+            .catch(error => {
+                setIsLoading(false);
             })
     }, [props.validCity])
     React.useEffect(() => {
         if (!cityLatLon) return;
+        setIsLoading(true);
         fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${cityLatLon.lat}&lon=${cityLatLon.lon}&appid=${apiKey}`)
             .then(response => {
                 if (!response.ok) {
@@ -42,6 +49,10 @@ export default function ForecastDashboard(props) {
                     })
                 }
                 setForecastData(forecast5Days);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                setIsLoading(false);
             })
     }, [cityLatLon])
 
@@ -49,7 +60,7 @@ export default function ForecastDashboard(props) {
         if (!forecastData) return null;
         return forecastData.map(day => {
             return (
-                <div className="weather-card" key={day.date}>
+                <div className="weather-card forecast-card" key={day.date}>
                     <div className="weather-main">
                         <h2>Date: {day.date}</h2>
                         <div className="weather-meta">
@@ -63,9 +74,15 @@ export default function ForecastDashboard(props) {
     }
 
     return (
-        <>
-            {forecastData && <h2>Forecast Dashboard</h2>}
-            {displayForecast()}
-        </>
+        <section className="forecast-section">
+            {forecastData && <h2 className="forecast-title">5-Day Forecast</h2>}
+
+            {isLoading && (
+                <div className="weather-card loading-card">Loading forecast...</div>
+            )}
+            {!isLoading && (
+                <div className="forecast-grid">{displayForecast()}</div>
+            )}
+        </section>
     )
 }

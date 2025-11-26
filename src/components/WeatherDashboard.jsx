@@ -3,9 +3,11 @@ export default function WeatherDashboard(props) {
     const apiKey = import.meta.env.VITE_WEATHER_API_KEY
     const [weatherData, setWeatherData] = React.useState(null);
     const [errorMessage, setErrorMessage] = React.useState(null);
+    const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
         if (props.city === "") return;
         setErrorMessage(null);
+        setIsLoading(true);
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=${apiKey}&units=metric`)
             .then(response => {
                 if (!response.ok) {
@@ -24,9 +26,11 @@ export default function WeatherDashboard(props) {
                     weatherIcon: data.weather[0].icon
                 })
                 props.setValidCity(props.city)
+                setIsLoading(false);
             })
             .catch(error => {
                 setErrorMessage("We couldn't find that city. Check the spelling and try again.")
+                setIsLoading(false);
             })
     }, [props.city])
 
@@ -43,7 +47,8 @@ export default function WeatherDashboard(props) {
     return (
         <section className="weather-section">
             <ErrorBanner message={errorMessage}/>
-            {!weatherData && !errorMessage && (
+            {isLoading && <span className="weather-card">Loading...</span>}
+            {!weatherData && !errorMessage && !isLoading && (
                 <div className="empty-state">
                     Search for a city to see its current weather.
                 </div>
