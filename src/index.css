@@ -95,6 +95,18 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1 1 260px;
+  }
+
+  .header-controls .searchCity {
+    flex: 1 1 auto;
   }
 }
 
