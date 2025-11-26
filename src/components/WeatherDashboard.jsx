@@ -34,7 +34,7 @@ export default function WeatherDashboard(props) {
             })
     }, [props.city])
 
-    function ErrorBanner({message}) {
+    function ErrorBanner({ message }) {
         if (!message) return null;
         return (
             <div className="alert alert-error" role="alert">
@@ -44,9 +44,20 @@ export default function WeatherDashboard(props) {
         )
     }
 
+    function convertToFahrenheit(celsius) {
+        return celsius * (9 / 5) + 32
+    }
+
+    function formatTemperature(celsius, units) {
+        if (units === "metric") {
+            return `${Math.round(celsius)}°C`;
+        }
+        return `${Math.round(convertToFahrenheit(celsius))}°F`
+    }
+
     return (
         <section className="weather-section">
-            <ErrorBanner message={errorMessage}/>
+            <ErrorBanner message={errorMessage} />
             {isLoading && <span className="weather-card">Loading...</span>}
             {!weatherData && !errorMessage && !isLoading && (
                 <div className="empty-state">
@@ -58,7 +69,7 @@ export default function WeatherDashboard(props) {
                     <div className="weather-main">
                         <h2>City: {weatherData.cityName}</h2>
                         <div className="weather-temp">
-                            {Math.round(weatherData.curTemp)}°C
+                            {formatTemperature(weatherData.curTemp, props.units)}
                         </div>
 
                         <div className="weather-meta">

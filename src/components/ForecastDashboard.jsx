@@ -26,7 +26,7 @@ export default function ForecastDashboard(props) {
     React.useEffect(() => {
         if (!cityLatLon) return;
         setIsLoading(true);
-        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${cityLatLon.lat}&lon=${cityLatLon.lon}&appid=${apiKey}`)
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${cityLatLon.lat}&lon=${cityLatLon.lon}&appid=${apiKey}&units=metric`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -56,6 +56,17 @@ export default function ForecastDashboard(props) {
             })
     }, [cityLatLon])
 
+    function convertToFahrenheit(celsius) {
+        return celsius * (9 / 5) + 32
+    }
+
+    function formatTemperature(celsius, units) {
+        if (units === "metric") {
+            return `${Math.round(celsius)}°C`;
+        }
+        return `${Math.round(convertToFahrenheit(celsius))}°F`
+    }
+
     function displayForecast() {
         if (!forecastData) return null;
         return forecastData.map(day => {
@@ -64,8 +75,8 @@ export default function ForecastDashboard(props) {
                     <div className="weather-main">
                         <h2>Date: {day.date}</h2>
                         <div className="weather-meta">
-                            <span>Min Temp: {day.temp_min}</span>
-                            <span>Max Temp: {day.temp_max}</span>
+                            <span>Min Temp: {formatTemperature(day.temp_min, props.units)}</span>
+                            <span>Max Temp: {formatTemperature(day.temp_max, props.units)}</span>
                         </div>
                     </div>
                 </div>
